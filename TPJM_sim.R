@@ -23,9 +23,9 @@ methodInt="Monte-carlo" # ("Standard" for standard gauss-hermite quadrature)
 assoc="Current-level" 
 MAXITER=100 # max iterations for Marquardt algorithm
 estim_TPJM <- T # Two-part joint model estimation
-estim_JMn <- T # Naive joint model estimation
-estim_JMlc <- T # Left-censoring joint model estimation
-plotsRes=T # plot results (survival conditional on treatment)
+estim_JMn <- F # Naive joint model estimation
+estim_JMlc <- F # Left-censoring joint model estimation
+plotsRes=F # plot results (survival conditional on treatment)
 set.seed(1) # seed for data generation
 seed_MC=1 # seed for Monte-carlo integration method
 
