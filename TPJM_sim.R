@@ -1,11 +1,8 @@
 
-# The two-part model will soon be implemented in the last version 
-# of the frailtypack package on the CRAN repository.
-# Please use the following version of the frailtypack package in 
-# order to compute this code:
-# https://github.com/socale/frailtypack/tree/TwoPart
+# The two-part model is implemented in the last version 
+# of the frailtypack package on the CRAN repository (3.1.0).
 
-
+# The following code is decomposed in 3 parts:
 # 1. Simulation of a dataset assuming a conditional two-part joint model 
 #    (with current-level association structure)
 # 2. Estimation of the true model as long as a joint naive and left-censored model
