@@ -61,7 +61,7 @@ gap=0.001 # used to generate a lot of time points because the permutation
 
 assocCL=0.30 # current-level association between two-part model and survival model
 
-kno=5 #knots for splines / baseline hazard
+kno=5 # knots for splines / baseline hazard
 
 followup=4 # follow-up time
 
@@ -165,7 +165,7 @@ longDat2 <- Ttemp[,c("Id", "Start", "trtY", "Yobs")]
 longDat2$timej <- mestime[longDat2$Start+1] # measurements times of the biomarker
 longDat3 <- longDat2[, c("Id", "timej", "trtY", "Yobs")]
 names(longDat3) <- c("id", "timej", "trtY", "Y")
-timesLongi=mestime[which(mestime%%gapLongi==0)] # visit times
+timesLongi=mestime[which(mestime-round(mestime/gapLongi,0)*gapLongi==0)] # visit times
 longDat <- longDat3[longDat3$timej%in%timesLongi,]
 
 survDat$id <- as.integer(survDat$id)
