@@ -107,7 +107,7 @@ print(summary(survDat))
 print(summary(longDat))
 
 ###########
-###  1  ### Estimation of a conditional two-part joint model with R-INLA
+###  2  ### Estimation of a conditional two-part joint model with R-INLA
 ###########
 
 # create dataset with positive values only for the continuous part
