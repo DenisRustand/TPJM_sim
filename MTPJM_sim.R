@@ -154,7 +154,7 @@ MTPJM <- longiPenal(fsurv, flon, data=survDat,data.Longi = longDat, random = c("
           MTP=T, # Trigger for marginal two-part model (set to FALSE for a conditional two-part model)
           timevar="timej",id = "id", link = "Current-level", left.censoring = F,seed.MC=1, 
           n.knots = 5, kappa = kap,hazard="Splines-per",maxit=200, 
-          method.GH="Monte-carlo", n.nodes=500)
+          method.GH="Monte-carlo", n.nodes=numInt)
 print(MTPJM)
             
             
