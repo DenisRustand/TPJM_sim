@@ -108,11 +108,8 @@ Ttemp <- permalgorithm(nsujet,nmesindiv,Xmat=matX,eventRandom = eventRandom,
                        betas=c(gamma_1,assocCL, 0) )
 
 # extract last line of each individual (= death/censoring time)
-ligne=NULL
-for(i in 1:(dim(Ttemp)[1]-1)){
-  if(Ttemp[i,"Id"]!=Ttemp[i+1,"Id"]) ligne <- c(ligne, i)  
-}
-ligne <-c(ligne, dim(Ttemp)[1])
+ligne <- c(which(diff(Ttemp[,"Id"])==1), dim(Ttemp)[1])
+
 
 
 Ttemp2=Ttemp[ligne, c("Id","Event","Stop", "trtY")] # one line per individual

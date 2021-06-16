@@ -74,8 +74,8 @@ B <- rbinom(nmesy,1, probaBin) # observed zero values
 
 ## linear predictor (continuous part)
 linPredCont <- beta_0+b_iY+(beta_1+bt_iY)*timej+beta_2*trtY+beta_3*timej*trtY
-mu=linPredCont-sigma_e^2/2 # lognormal mean
-Ypos <- rlnorm(length(mu), meanlog = mu, sdlog = sigma_e) # observed biomarker values
+	   
+Ypos <- rnorm(length(linPredCont), mean = linPredCont, sd = sigma_e) # observed biomarker values
 Y = (ifelse(B==1, Ypos, 0)) # include zeros in the biomarker distribution
 
 ## longitudinal biomarker dataset
@@ -178,14 +178,14 @@ formulaJ= update(cox_ext$formula, Yjoint ~ . + InteB+InteC + TIME*TRTc+TIMEb*TRT
                    f(IDs2,copy="IDl2",fixed=F))
 
 #Fit model with INLA ()
-TPinla <- inla(formulaJ,family = c("binomial", "gamma", cox_ext$family), 
+TPinla <- inla(formulaJ,family = c("binomial", "gaussian", cox_ext$family), 
                data=joint.data_cox,
                Ntrials=c(rep(1,length(longDat$Y)),rep(NA,nC),rep(NA,ns_cox)),
-               control.predictor=list(compute=TRUE,link=1),#error gaussian
+               control.predictor=list(compute=TRUE,link=1),
                E = joint.data_cox$E..coxph,
                control.family=list(list(control.link = list(model = "logit")),
-                                   list(link='log',hyper = list(prec = list(initial = 2, fixed=FALSE))),
-                                   list()),#variant = 1
+                                   list(),
+                                   list()),
                control.inla = list(strategy="adaptive"),
                control.fixed=list(remove.names="(Intercept)"),
                verbose=F)
