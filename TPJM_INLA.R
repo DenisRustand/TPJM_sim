@@ -8,15 +8,13 @@ set.seed(1)
 ###  1  ### Simulation of a dataset
 ###########
 
-library(mvtnorm) # for multivariate normal generation (random-effects)
+library(mvtnorm) # for multivariate normal generation (random effects)
 nsujet=200 # number of individuals
-#binary part
-alpha_0=4 # Intercept
+alpha_0=4 # Intercept (binary part)
 alpha_1=-0.5 # slope
 alpha_2=-0.5 # treatment
 alpha_3=0.5 # treatment x time
-#continuous part
-beta_0=2 # Intercept
+beta_0=2 # Intercept (continuous part)
 beta_1=-0.3 # slope
 beta_2=-0.3 # treatment
 beta_3=0.3 # treatment x time
@@ -26,11 +24,9 @@ gamma_1=0.2 # treatmentt effect on survival
 phi_a=1 # random intercept (binary)
 phi_b=1 # random intercept (continuous)
 phi_bt=1 # random slope (continuous)
-# baseline hazard scale (to generate exponential death times)
-baseScale=0.2
+baseScale=0.2 # baseline hazard scale
 gap=0.4# gap between longitudinal repeated measurements
 followup=4 # study duration
-# correlated random-effects
 sigma_a=1 # random intercept (binary)
 sigma_b=0.5 # random intercept (continuous)
 sigma_bt=0.5 # random slope (continuous)
@@ -68,25 +64,22 @@ linPredCont <- beta_0+b_iY+(beta_1+bt_iY)*timej+beta_2*trtY+beta_3*timej*trtY
 # observed biomarker values
 Ypos <- rnorm(length(linPredCont), mean = linPredCont, sd = sigma_e)
 Y = ifelse(B==1, Ypos, 0) # include zeros in the biomarker distribution
-## longitudinal biomarker dataset
-longDat <- data.frame(id=as.integer(id), timej, trtY, Y, B)
+longDat <- data.frame(id=as.integer(id), timej, trtY, Y, B) # longitudinal dataset
 ## generation of exponential death times
 u <- runif(nsujet) # uniform distribution for survival times generation
-deathTimes <- -(log(u) / (baseScale * exp(trt * gamma_1 + a_i*phi_a + b_i*phi_b + bt_i*phi_bt)))
+deathTimes <- -(log(u)/(baseScale*exp(trt*gamma_1+a_i*phi_a+b_i*phi_b+bt_i*phi_bt)))
 d <- as.numeric(deathTimes<followup) # deathtimes indicator
 ## censoring individuals at end of follow-up (not at random)
 deathTimes[deathTimes>=followup]=followup
 ids <- as.factor(1:nsujet)
-survDat <- data.frame(id=as.integer(ids),deathTimes, d, trt) # survival times dataset
+survDat <- data.frame(id=as.integer(ids),deathTimes, d, trt) # survival dataset
 ## removing longi measurements after death
 ind <- rep(NA, nsujet*length(mestime))
 for (i in 1:nsujet){
   for(j in 1:length(mestime)){
     if(longDat[(i-1)*length(mestime)+j, "timej"]<=survDat[i,"deathTimes"]){
       ind[(i-1)*length(mestime)+j]=1
-    }
-  }
-}
+    } } }
 longDat <- longDat[!is.na(ind),]
 ## Summary of the longitudinal and survival datasets
 print(summary(survDat))
