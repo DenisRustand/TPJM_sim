@@ -1,7 +1,8 @@
 
 # 1- This code shows how to simulate a dataset assuming a conditional two-part joint model
-# 2- The estimation of the conditional two-part joint model is then done with INLAjoint
-# 3- Alternative estimation with R-INLA
+# 2- The estimation of the conditional two-part joint model with INLAjoint
+# 3- Older version of the code - estimation with R-INLA
+# 4- The estimation of the conditional two-part joint model with frailtypack
 set.seed(1)
 
 ###########
@@ -79,7 +80,7 @@ for (i in 1:nsujet){
   for(j in 1:length(mestime)){
     if(longDat[(i-1)*length(mestime)+j, "timej"]<=survDat[i,"deathTimes"]){
       ind[(i-1)*length(mestime)+j]=1
-    } } }
+} } }
 longDat <- longDat[!is.na(ind),]
 ## Summary of the longitudinal and survival datasets
 print(summary(survDat))
@@ -102,7 +103,6 @@ TPinla <- joint(formLong = list(B ~ timej * trtY + (1|id),
                              priorAssoc=list(mean=1, prec=10), int.strategy="eb"),
                 dataLong = list(longDat, longDat[longDat$Y!=0,]), dataSurv=survDat)
 summary(TPinla, sdcor=T)
-
 
 if(F){ # (replaced by the user-friendly interface INLAjoint)
   ###########
@@ -190,4 +190,31 @@ if(F){ # (replaced by the user-friendly interface INLAjoint)
                  verbose=F)
   print(summary(TPinla))
 }
+
+if(F){
+  ###########
+  ###  3  ### Estimation of a conditional two-part joint model with frailtypack
+  ###########
+
+  library(frailtypack)
+  # kappa value (smoothing) chosen by cross-validation with an univariate Cox model
+  tte <- frailtyPenal(Surv(deathTimes, d)~trt, n.knots=5,
+                      kappa=0, data=survDat, cross.validation=T)
+  kap <- round(tte$kappa,2);kap # smoothing parameter
+  longDat[longDat$Y==0,"Y"] <- -40 # need to set zeros as smallest value observed
+  # computation takes ~12min with an Intel i7-4790 (8 cores, 3.60 GHz)
+  TPJM <- longiPenal(formula = Surv(deathTimes, d)~trt,
+                     formula.LongitudinalData = Y~timej*trtY,
+                     formula.Binary=Y~timej*trtY,
+                     data=survDat, data.Longi = longDat,
+                     random = c("1","timej"), random.Binary=c("1"),
+                     timevar="timej", id = "id",
+                     link = "Random-effects", n.knots = 5, kappa = kap,
+                     hazard="Splines-per", method.GH="Monte-carlo",
+                     n.nodes=1000, seed.MC=1234);TPJM
+}
+
+
+
+
 
