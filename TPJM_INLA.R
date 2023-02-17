@@ -193,7 +193,7 @@ if(F){ # (replaced by the user-friendly interface INLAjoint)
 
 if(F){
   ###########
-  ###  3  ### Estimation of a conditional two-part joint model with frailtypack
+  ###  4  ### Estimation of a conditional two-part joint model with frailtypack
   ###########
 
   library(frailtypack)
